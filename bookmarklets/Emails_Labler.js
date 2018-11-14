@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Emails Labler
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  try to take over the world!
 // @author       You
 // @match        https://app.gong.io/account?*
@@ -11,7 +11,6 @@
 // ==/UserScript==
 
 'use strict';
-
 
 const classes = {
     "Request for meeting": false,
