@@ -7,6 +7,7 @@
 // @match        https://app.gong.io/account?*
 // @grant none
 // @require http://code.jquery.com/jquery-latest.js
+// @downloadURL https://honeyfy.github.io/public_research/bookmarklets/Emails_Labler.js
 // ==/UserScript==
 
 'use strict';
