@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Emails Labler
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  try to take over the world!
 // @author       You
 // @match        https://app.gong.io/account?*
@@ -140,6 +140,8 @@ function initEmail(email_id){
             chkbox.prop('checked', true);
         }
         chkbox.on('click', function(e){
+            //fix url in the ugliest way :(
+            email_data.url = document.location.href;
             var user_name = $('i.user-attention.on-dark-bg').parent().text().trim();
             var current_datetime = (new Date().toLocaleString()).replace(',', '');
             email_data.labeler = user_name;
