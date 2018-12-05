@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         Subtitiles
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.2.2
 // @description  subtitles for a Gong call
 // @author       Golan Levy
-// @match        https://app.gong.io/call?*
+// @match        https://app.gong.io/call*?id=*
 // @grant        none
 // @downloadURL https://honeyfy.github.io/public_research/bookmarklets/subtitles.js
 // ==/UserScript==
@@ -45,8 +45,23 @@
 
     var callID = window.location.search.split("id=")[1]
     var src = window.location.origin + "/call/pretty-transcript?call-id= " + callID;
-    iframe = $('<iframe height="300px" width="100%"></iframe>');
+
+    iframe = $('<iframe id="id0" height="300px" width="100%"></iframe>');
     iframe.attr('src', src);
+    iframe.load(function(){
+        iframe.contents().find('body').css("max-width", "98%")
+        iframe.contents().find('body').css("padding", "10px 1em 10px 1em")
+        iframe.contents().find('.speaker').css("margin-bottom", "0.4em")
+        iframe.contents().find('.speaker').css("margin-top", "1em")
+        iframe.contents().find('.timestamp').css("top", "-2em")
+        iframe.contents().find('.timestamp').css("left", "-2.5em")
+        iframe.contents().find('a[class="timestamp"]').each(function(index, item){
+            var right_time = ts2num( $(item).text().replace(/\s/g, "") )
+            $(item).attr("href", "javascript:parent.document.dispatchEvent(new CustomEvent(\'gong-video-set-current-time\', { detail: { time:" +
+                         right_time + " , playerId: \'callRecordingVideo\' }}));")
+        })
+
+    })
     sibling.after(iframe);
 
     $('.video-player-current-time').on('DOMSubtreeModified', function () {
