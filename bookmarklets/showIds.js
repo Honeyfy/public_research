@@ -1,4 +1,4 @@
-javascript : (function () {
+javascript: (function () {
   $("a[data-call-id]").each(function () {
     $(this).parent().append("<span style='color:blue;padding-left:10px'>" + $(this).attr("data-call-id") + "</span>")
   });
