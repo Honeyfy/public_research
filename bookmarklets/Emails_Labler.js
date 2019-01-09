@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Emails Labler
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  try to take over the world!
 // @author       You
 // @match        https://app.gong.io/account?*
@@ -89,8 +89,13 @@ function updateStorage(){
 }
 
 function addSaveButton(){
-    var saveButton = $("<li class='app-nav-item-left'><a href='javascript:save();' class='hidden-xs'><span>SAVE</span></a></li>");
+    var saveButton = $("<li class='app-nav-item-left'><a href='javascript:save();' class='hidden-xs'><span style='color:blue'>SAVE</span></a></li>");
     $(".app-nav-item-left").last().after(saveButton);
+}
+
+function addClearButton(){
+    var clearButton = $("<li class='app-nav-item-left'><a href='javascript:clearData();' class='hidden-xs'><span style='color:red'>CLEAR</span></a></li>");
+    $(".app-nav-item-left").last().after(clearButton);
 }
 
 var prev_url = "";
@@ -129,7 +134,7 @@ function initEmail(){
         email_data.url = document.location.href;
         email_data.labeler = '';
         email_data.current_datetime = '';
-        
+
         // email_data.email_date = $('.day-date-header').text();
         data[email_id] = email_data;
     }
@@ -182,7 +187,7 @@ $(document).ready(function(e) {
 
     window.save = function(filename){
         if(!data || Object.keys(data).length === 0) {
-            console.error('Console.save: No data')
+            console.error('No data')
             return;
         }
 
@@ -195,7 +200,7 @@ $(document).ready(function(e) {
             // check if atleast one is not false
             if (!Object.values(email.classes).some(x=>x))
             {
-                return undefined;
+                return;
             }
             var labeler = email.labeler || '';
             var direction = email.direction || '';
@@ -204,7 +209,8 @@ $(document).ready(function(e) {
             return key + "," + email.url + "," + labeler + ',' + current_datetime + ',' + email_direction + ',' + email.html_class_names + "," + fields.map(function(fieldName){
                 return JSON.stringify(email.classes[fieldName], replacer);
             }).join(',')
-        });
+        }).filter(function(x) { return x !== undefined});
+
         csv.unshift('id,url,user_name, current_datetime, direction, html_class_names,' + fields.join(',')); // add header column
         var allText = csv.join('\r\n');
 
@@ -220,6 +226,18 @@ $(document).ready(function(e) {
     }
 
     addSaveButton();
+
+    window.clearData = function(){
+        var r = confirm("Clear all labels?");
+        if (r === true) {
+            data = {};
+            localStorage.removeItem(entry);
+            // Uncheck everything
+            $('div.labeling-option>input[type="checkbox"]').each(function() {this.checked=false;});
+        }
+    };
+
+    addClearButton();
 
 
     $('.account-activities-panel.activity-expanded-view-panel').on("click", ".labeling-option label", function(e){
