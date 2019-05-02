@@ -9,12 +9,12 @@
 // @downloadURL https://honeyfy.github.io/public_research/bookmarklets/subtitles.js
 // ==/UserScript==
 
-(function() {
+(function () {
     'use strict';
     var iframe;
 
     function ts2num(ts) {
-        var num = ts.trimEnd().split(':').reduce((acc,time) => (60 * acc) + +time);
+        var num = ts.trimEnd().split(':').reduce((acc, time) => (60 * acc) + +time);
         return num;
     }
 
@@ -22,12 +22,18 @@
         var lookfor = ts2num(c);
         var selector = iframe.contents().find('.timestamp');
         var i = 0;
-        while (lookfor>ts2num(selector[i].innerText) && i<selector.length) {
-            i++;
+
+        if (selector.length == 0) { return 0 }      // prevent no transcript error 
+        try {
+            while (lookfor > ts2num(selector[i].innerText) && i < selector.length) {
+                i++;
+            }
+        } catch (e) {
+            console.error('An unexpected error has occured', e)
         }
-        return selector[i-1];
+        return selector[i - 1];
     }
-    
+
     var last_elem = 0;
     /* Scroll transcript page to specific time */
     function scroll_to_time(c) {
@@ -46,25 +52,29 @@
     var callID = window.location.search.split("id=")[1]
     var src = window.location.origin + "/call/pretty-transcript?call-id= " + callID;
 
-    iframe = $('<iframe id="id0" height="300px" width="100%"></iframe>');
-    iframe.attr('src', src);
-    iframe.load(function(){
-        iframe.contents().find('body').css("max-width", "98%")
-        iframe.contents().find('body').css("padding", "10px 1em 10px 1em")
-        iframe.contents().find('.speaker').css("margin-bottom", "0.4em")
-        iframe.contents().find('.speaker').css("margin-top", "1em")
-        iframe.contents().find('.timestamp').css("top", "-2em")
-        iframe.contents().find('.timestamp').css("left", "-2.5em")
-        iframe.contents().find('a[class="timestamp"]').each(function(index, item){
-            var right_time = ts2num( $(item).text().replace(/\s/g, "") )
-            $(item).attr("href", "javascript:parent.document.dispatchEvent(new CustomEvent(\'gong-video-set-current-time\', { detail: { time:" +
-                         right_time + " , playerId: \'callRecordingVideo\' }}));")
+    try {
+        iframe = $('<iframe id="id0" height="300px" width="100%"></iframe>');
+        iframe.attr('src', src);
+        iframe.load(function () {
+            iframe.contents().find('body').css("max-width", "98%")
+            iframe.contents().find('body').css("padding", "10px 1em 10px 1em")
+            iframe.contents().find('.speaker').css("margin-bottom", "0.4em")
+            iframe.contents().find('.speaker').css("margin-top", "1em")
+            iframe.contents().find('.timestamp').css("top", "-2em")
+            iframe.contents().find('.timestamp').css("left", "-2.5em")
+            iframe.contents().find('a[class="timestamp"]').each(function (index, item) {
+                var right_time = ts2num($(item).text().replace(/\s/g, ""))
+                $(item).attr("href", "javascript:parent.document.dispatchEvent(new CustomEvent(\'gong-video-set-current-time\', { detail: { time:" +
+                    right_time + " , playerId: \'callRecordingVideo\' }}));")
+            })
+
         })
+        sibling.after(iframe);
 
-    })
-    sibling.after(iframe);
-
-    $('.video-player-current-time').on('DOMSubtreeModified', function () {
-        scroll_to_time($(this).text());
-    });
+        $('.video-player-current-time').on('DOMSubtreeModified', function () {
+            scroll_to_time($(this).text());
+        });
+    } catch (e) {
+        console.error('An unexpected error has occured', e)
+    }
 })();
