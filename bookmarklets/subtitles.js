@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Subtitiles
 // @namespace    http://tampermonkey.net/
-// @version      0.2.3
+// @version      0.2.4
 // @description  subtitles for a Gong call
 // @author       Golan Levy
 // @match        https://app.gong.io/call*?id=*
@@ -25,7 +25,7 @@
         var selector = iframe.contents().find('.timestamp');
         var i = 0;
 
-        if (selector.length == 0) { return 0 }      // prevent no transcript error 
+        if (selector.length == 0) { return 0 }      // prevent no transcript error
         try {
             while (lookfor > ts2num(selector[i].innerText) && i < selector.length) {
                 i++;
@@ -39,12 +39,10 @@
     var last_elem = 0;
     /* Scroll transcript page to specific time */
     function scroll_to_time(c) {
-        //problematic in Iframes
-        //find_closest_transcript_time(c).scrollIntoView();
+        // find_closest_transcript_time(c).scrollIntoView();
         var elem = find_closest_transcript_time(c);
-        if (last_elem != elem) {
+        if (last_elem !== elem) {
             last_elem = elem;
-            //document.documentElement.scrollTop = elem.offsetParent.offsetTop;
             iframe.contents()[0].documentElement.scrollTop = elem.offsetParent.offsetTop - 50;
         }
     }
@@ -72,9 +70,6 @@
                     parent.document.dispatchEvent(new CustomEvent('gong-video-set-current-time', { detail: { time: `${right_time}` , playerId: 'callRecordingVideo'}}));
                     return false;
                 })
-//                 $(item).attr("href", "javascript:parent.document.dispatchEvent(new CustomEvent(\'gong-video-set-current-time\', { detail: { time:\"" +
-//                    right_time + "\" , playerId: \'callRecordingVideo\'}}));")
-
             })
         })
         sibling.after(iframe);
