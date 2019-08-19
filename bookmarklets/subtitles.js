@@ -9,9 +9,11 @@
 // @downloadURL https://honeyfy.github.io/public_research/bookmarklets/subtitles.js
 // ==/UserScript==
 
+
 (function () {
     'use strict';
     var iframe;
+
 
     function ts2num(ts) {
         var num = ts.trimEnd().split(':').reduce((acc, time) => (60 * acc) + +time);
@@ -53,7 +55,7 @@
     var src = window.location.origin + "/call/pretty-transcript?call-id= " + callID;
 
     try {
-        iframe = $('<iframe id="id0" height="300px" width="100%"></iframe>');
+        iframe = $('<iframe id="id0321" height="300px" width="100%"></iframe>');
         iframe.attr('src', src);
         iframe.load(function () {
             iframe.contents().find('body').css("max-width", "98%")
@@ -64,10 +66,16 @@
             iframe.contents().find('.timestamp').css("left", "-2.5em")
             iframe.contents().find('a[class="timestamp"]').each(function (index, item) {
                 var right_time = ts2num($(item).text().replace(/\s/g, ""))
-                $(item).attr("href", "javascript:parent.document.dispatchEvent(new CustomEvent(\'gong-video-set-current-time\', { detail: { time:" +
-                    right_time + " , playerId: \'callRecordingVideo\' }}));")
-            })
+                $(item).removeAttr('target')
+                $(item).removeAttr('href')
+                $(item).click(function() {
+                    parent.document.dispatchEvent(new CustomEvent('gong-video-set-current-time', { detail: { time: `${right_time}` , playerId: 'callRecordingVideo'}}));
+                    return false;
+                })
+//                 $(item).attr("href", "javascript:parent.document.dispatchEvent(new CustomEvent(\'gong-video-set-current-time\', { detail: { time:\"" +
+//                    right_time + "\" , playerId: \'callRecordingVideo\'}}));")
 
+            })
         })
         sibling.after(iframe);
 
