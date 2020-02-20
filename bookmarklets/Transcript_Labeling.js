@@ -6,6 +6,7 @@
 // @author       You
 // @match        https://app.gong.io/call/pretty-transcript?call-id=*
 // @grant        none
+// @downloadURL https://honeyfy.github.io/public_research/bookmarklets/Transcript_Labeling.js
 // ==/UserScript==
 
 if (!Array.prototype.last){
