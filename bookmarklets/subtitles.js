@@ -50,7 +50,7 @@
     var sibling = $('.player-controls-wrap');
 
     var callID = window.location.search.split("id=")[1]
-    var src = window.location.origin + "/call/pretty-transcript?call-id= " + callID;
+    var src = window.location.origin + "/call/pretty-transcript?call-id=" + callID;
 
     try {
         iframe = $('<iframe id="id0321" height="300px" width="100%"></iframe>');
