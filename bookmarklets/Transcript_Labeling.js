@@ -2,8 +2,8 @@
 // @name         Transcript Labeling
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  try to take over the world!
-// @author       You
+// @description  Label transcription files in Gong's website
+// @author       Vitaliy Rybnikov, Golan Levy
 // @match        https://app.gong.io/call/pretty-transcript?call-id=*
 // @grant        none
 // @downloadURL https://honeyfy.github.io/public_research/bookmarklets/Transcript_Labeling.js
