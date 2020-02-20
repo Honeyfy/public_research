@@ -21,9 +21,13 @@ if (!Array.prototype.last){
     const texts = [];
     const originalTexts = [];
     let annotations = [];
+    var url = new URL(window.location);
+	var callId = decodeURIComponent(url.searchParams.get("call-id"));
+    if (!callId) callId = decodeURIComponent(url.searchParams.get("id"));
+
 
     function downloadData(){
-        var callId = window.location.href.split('=').last();
+        //var callId = window.location.href.split('=').last();
         var filename = callId + '.csv';
         var data = 'label,text,timestamp,link\n';
 
@@ -107,14 +111,14 @@ if (!Array.prototype.last){
         if (currentStored && currentStored.length) {
             try {
                 const currentStoredObj = JSON.parse(currentStored);
-                currentStoredObj[window.location.href] = annotations;
+                currentStoredObj[callId] = annotations;
                 window.localStorage.setItem('gong_labeling_bookmarklet', JSON.stringify(currentStoredObj));
             } catch(e) {
                 console.error('error saving local storage');
             }
         } else {
             const store = {}
-            store[window.location.href] = annotations;
+            store[callId] = annotations;
             window.localStorage.setItem('gong_labeling_bookmarklet', JSON.stringify(store));
         }
     }
@@ -395,8 +399,8 @@ if (!Array.prototype.last){
     const currentStored = window.localStorage.getItem('gong_labeling_bookmarklet');
     try {
         const currentStoredObj = JSON.parse(currentStored);
-        if (currentStoredObj && currentStoredObj[window.location.href]) {
-            annotations = currentStoredObj[window.location.href];
+        if (currentStoredObj && currentStoredObj[callId]) {
+            annotations = currentStoredObj[callId];
             renderAnnotations();
         }
     } catch (e) {
