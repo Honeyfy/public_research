@@ -292,8 +292,8 @@ if (!Array.prototype.last){
     }
 
     const labelsContainer = crel('div', null, {
-        position: 'sticky',
-        top: '0px',
+        position: 'fixed',
+        bottom: '0px',
         display: 'flex',
         width: '50vw',
         justifyContent: 'space-around'
