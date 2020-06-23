@@ -1,0 +1,22 @@
+{
+    "manifest_version": 2,
+    "name": "Edit Transcript",
+    "description": "Edit transcripts in Gong's website",
+    "version": "1.0",
+    "browser_action": {
+        "default_icon": {
+            "32": "icon.png"
+        }
+    },
+    "permissions": [
+         "activeTab"
+     ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://app.gong.io/call/pretty-transcript?call-id=*"
+            ],
+            "js": ["gong-edit-transcript.js"]
+        }
+    ]
+}
