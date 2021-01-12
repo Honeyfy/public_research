@@ -53,7 +53,6 @@ async function setLabels(name, labels){
             },
             body: JSON.stringify(labels)
         })
-
 }
 
 function deleteFromStorage(){
@@ -67,7 +66,8 @@ function deleteFromStorage(){
 }
 
 function updateStorage(){
-    if (data && data[email_id] && data[email_id].labels.length > 0){
+    changeComment();
+    if (data && data[email_id] && (data[email_id].labels.length > 0 || data[email_id].comment.length > 0)){
         let url = `https://email-labeling-default-rtdb.firebaseio.com/${email_id}.json`;
         fetch(url, {
             method: 'PATCH', // *GET, POST, PUT, DELETE, etc.
@@ -81,6 +81,8 @@ function updateStorage(){
     else if(in_database && data && data[email_id]){
         deleteFromStorage();
     }
+
+    
 }
 
 function addButtons(){
@@ -100,19 +102,32 @@ function addLabels(){
     var labelContainer = $(`<div id='LabelContainer' class='activities-top-nav' style='display: flex; flex-direction: column; padding-top: 0;'><div></div></div>`);
     $(".activities-top-nav").last().after(labelContainer);
     for (const label in labels){
-        let checked = data_labels.includes(label);
+        let checked = data_labels ? data_labels.includes(label) : false;
         var labelItem = $(`<a data-checked='${checked}' data-label-name='${label}' href='javascript:clickLabel("${label}")' class='btn btn-link nav-link label-container'>` +
                           `<span style='color:darkblue'>${label}</span>` +
                           `</a>`);
-        labelItem.css("background-color", checked?"yellow":"white");
+        labelItem.css("background-color", checked?"#e0c7f1":"white");
         labelContainer.children().append(labelItem);
 
     }
+    var textBox = $(`<div> <textarea id="commentTextBox" placeholder="Comment here" style=" width: 100%; height: 50px; padding: 5px; border-radius: 5px; border: 1px solid lightgray; resize: none;"></textarea> </div>`);
+    labelContainer.append(textBox);
+    $("#commentTextBox")[0].value = data[email_id] ? data[email_id].comment : "";
+    $("#commentTextBox")[0].addEventListener('input', () =>{
+        changeComment();
+    });
 }
 
 function removeLabels(){
     $('#LabelContainer').remove();
 }
+
+function changeComment(){
+    if (data[email_id] && $("#commentTextBox")[0]){
+        data[email_id].comment = $("#commentTextBox")[0].value;
+    }
+}
+
 
 
 function add_style(css) {
@@ -163,12 +178,15 @@ function initEmail(){
                 //email_data.text = $(".email-body")[0].innerText;
                 //email_data.subject = $(".gong-email-title")[0].innerText;
                 email_data.labels = [];
+                email_data.comment = "";
                 data[email_id] = email_data;
 
             }
             else{
                 in_database = true;
                 data[email_id] = email_data;
+                if (!email_data.labels)
+                    data[email_id].labels = [];
             }
             addLabels();
             addButtons();
@@ -239,7 +257,10 @@ async function onLoad(){
 
             window.clearData = function(){
                 resetLabels();
-                delete data[email_id];
+                if ($("#commentTextBox")[0])
+                    $("#commentTextBox")[0].value = "";
+                data[email_id].labels = [];
+                data[email_id].comment = "";
                 deleteFromStorage();
             }
 
@@ -274,7 +295,7 @@ async function onLoad(){
 
                 if (l[0].dataset.checked == "false"){
                     data[email_id].labels.push(label);
-                    l.css("background-color", "yellow");
+                    l.css("background-color", "#e0c7f1");
                     l[0].dataset.checked = "true";
                 }
                 else{
@@ -325,7 +346,7 @@ addCss('.ui-dialog { position: absolute; width: 300px; overflow: hidden; backgro
        '.ui-dialog .ui-dialog-buttonpane { display: flex; justify-content: flex-end; margin: 10px; }\n'+
        '.ui-dialog .ui-dialog-button-done { color: #84729B; border: transparent; background: transparent; outline: none !important; }\n'+
        '.ui-dialog .ui-dialog-button-done { color: #480976; }\n'+
-
+       'textarea:focus { outline: none }\n'+
        '.ui-draggable .ui-dialog-titlebar { cursor: move; }');
 
 
