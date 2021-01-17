@@ -319,7 +319,7 @@ async function onLoad(){
             return;
         }
         removeLabels();
-        if ($(".email-body").length > 0){
+        if ($(".email-activity-preview__subject").length > 0){
             prev_url = current_url;
             initEmail();
         }
@@ -348,6 +348,3 @@ addCss('.ui-dialog { position: absolute; width: 300px; overflow: hidden; backgro
        '.ui-dialog .ui-dialog-button-done { color: #480976; }\n'+
        'textarea:focus { outline: none }\n'+
        '.ui-draggable .ui-dialog-titlebar { cursor: move; }');
-
-
-
