@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Smart Speed
 // @namespace    http://gong.io/
-// @version      0.2.53
+// @version      0.2.5
 // @description  World domination
 // @author       Rotem Eilaty
 // @match        https://app.gong.io/call?id=*
@@ -41,9 +41,9 @@
 
     var seg_count;
 
-    var current_smart_speed = 190;
+    var current_smart_speed = 185;
     var call_wa_mean_smart_speed = 0;
-    var smart_speed_diff = 190 * .25;
+    var smart_speed_diff = current_smart_speed * .25;
 
     var current_speed = 1;
 
@@ -383,17 +383,17 @@
                 smart_speed_diff = current_smart_speed * .25;
             }
         })
-            .then((resolve)=>{create_volumes(d);})
+            //.then((resolve)=>{create_volumes(d);})
 
-    }
-    async function create_volumes(d){
-        let url = `https://volumeplay-69906.firebaseio.com/.json`;
-        $.getJSON(url, function(data) {
-            if (call_id in data && !isNaN(data[call_id][0])){
-                volumes = data[call_id];
+    //}
+    //async function create_volumes(d){
+    //    let url = `https://volumeplay-69906.firebaseio.com/.json`;
+    //    $.getJSON(url, function(data) {
+    //        if (call_id in data && !isNaN(data[call_id][0])){
+    //            volumes = data[call_id];
 
-            }
-        })
+    //        }
+    //    })
             .then(()=>{get_topics();})
             .then(()=>{create_silences(d);});
     }
@@ -468,12 +468,12 @@
             event_smart_speed(monologue_speed);
             event_reduce_silence(silences);
             event_skip_irrelevent_topics(irrelevent_topics);
-            event_smart_volume();
+            //event_smart_volume();
         }
         else{
             smart_speed_view();
             document.getElementById("smartTimeStamp").style.display = "none"
-            
+
             button.style.color = "gray";
             button.style.backgroundColor = "rgb(239 239 239)";
 
@@ -591,12 +591,12 @@
             +'</div>'
         }
 
-        let volume_exist = ""
-        if (volumes){
-            volume_exist = '<div class="smart-class">'
-            +'<label for="smartVolume">Smart Volume</label><input index="4" id="smartVolume" type="checkbox">'
-            +'</div>'
-        }
+        //let volume_exist = ""
+        //if (volumes){
+        //    volume_exist = '<div class="smart-class">'
+        //    +'<label for="smartVolume">Smart Volume</label><input index="4" id="smartVolume" type="checkbox">'
+        //    +'</div>'
+        //}
 
         smart_player_info.innerHTML = '<div class="fade call-info-popover popover bottom" style="display: block; top:35px;max-width:250px; min-width:200px;">'
             //+'<div class="arrow" style="left: 30%;"></div>'
@@ -610,7 +610,7 @@
             + speed_exist
             + silences_exist
             + topics_exist
-            + volume_exist
+            // + volume_exist
             +'</div>'
             +'</div>'
 
