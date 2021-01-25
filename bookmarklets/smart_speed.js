@@ -90,7 +90,8 @@
                         smart_duration += time * (speakers[monologue_speed[i][speaker]][segments][speaker_segment][speaker_speed] / current_smart_speed);
                     }
                     else{
-                        smart_duration += time * (speakers[monologue_speed[i][speaker]][segments][speaker_segment - 1][speaker_speed] / current_smart_speed);
+                        if (monologue_speed[i][speaker] in speakers && speakers[monologue_speed[i][speaker]].length > segments)
+                            smart_duration += time * (speakers[monologue_speed[i][speaker]][segments][speaker_segment - 1][speaker_speed] / current_smart_speed);
                     }
                     if(i < len - 1){
                         let gap = monologue_speed[i + 1][start] - monologue_speed[i][end];
@@ -137,7 +138,12 @@
     }
 
     function event_smart_speed(j){
-        //console.log(j);
+        //if (j.length > 5){
+        //    console.log(current_smart_speed);
+        //    console.log(j[0]);
+        //    console.log(speakers[j[0][3]]);
+        //}
+
         video.addEventListener("timeupdate", function() {
             if (chosen_options[is_smart] && chosen_options[is_smart_speed]){
                 for (var i = 0; i < j.length; i++){
@@ -146,12 +152,16 @@
                             if (duration > segment_duration * 2){
                                 for (let i = 0; i < seg_count; i++){
                                     if(video.currentTime <= segment_duration * (i + 1)){
-                                        video.playbackRate = current_smart_speed/speakers[j[i][3]][segments][i][2];
+                                        //console.log(j[i]);
+                                        //console.log(speakers[j[i][3]]);
+                                        //console.log(segments);
+                                        //console.log(current_smart_speed / speakers[j[i][3]][segments][i][2])
+                                        video.playbackRate = current_smart_speed / speakers[j[i][3]][segments][i][2];
                                         return;
                                     }
                                 }
                             }
-                            video.playbackRate = current_smart_speed/speakers[j[i][3]][total][2];
+                            video.playbackRate = current_smart_speed / speakers[j[i][3]][total][2];
                             return;
                         }
                     }
